@@ -1,23 +1,48 @@
-import logo from './logo.svg';
+
+import { useEffect, useState } from 'react'
+
 import './App.css';
 
+const SuperheroRow = ({name, alterEgo, homeCity}) => (
+<tr>
+  <td>{name}</td>
+  <td>{alterEgo}</td>
+  <td>{homeCity}</td>
+</tr>
+)
+
 function App() {
+
+  const [superheros, setSuperheroes] = useState([])
+
+useEffect(() => {
+  async function fetchData(){
+    console.log('fetching superhero data')
+    let fetchResult = await fetch("/api/superhero")
+    let superheroList = await fetchResult.json()
+    setSuperheroes(superheroList)
+  }
+  fetchData()
+}, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Superhuman List</h1>
+      <table style={ {margin: "auto"} }>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Alter Ego</th>
+          <th>Home City</th>
+        </tr>
+        </thead>
+        <tbody>
+          {
+            superheros.map((hero, index) => (
+            <SuperheroRow key={index} name={hero.superheroName} alterEgo={hero.alterEgo} homeCity={hero.homeCity}/>))
+          }
+        </tbody>
+      </table>
     </div>
   );
 }
